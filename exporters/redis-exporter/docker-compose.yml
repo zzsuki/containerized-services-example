@@ -1,0 +1,12 @@
+version: "3"
+services:
+  redis-exporter:
+    image: bitnami/redis-exporter:latest
+    container_name: redis-exporter
+    network_mode: host
+    command:
+      - "--redis.addr=redis://${REDIS_HOST}:6379"
+      - 'export-client-list=true'
+    ports: 
+        - '9121:9121'
+    restart: always

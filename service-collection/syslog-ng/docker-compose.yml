@@ -1,0 +1,25 @@
+version: "3"
+services:
+  syslog-ng:
+    image: lscr.io/linuxserver/syslog-ng:latest
+    container_name: syslog-ng
+    restart: always
+    privileged: true
+    networks:
+      - test-server-network
+    ports:
+      - "514:5514/udp"
+      - "601:6601/tcp"
+      - "6514:6514/tcp"
+    environment:
+      - PUID=0
+      - PGID=0
+      - TZ=Asia/Shanghai
+    volumes:
+      - syslog-ng-data:/config/log
+      - ./syslog-ng.conf:/config/syslog-ng.conf
+networks:
+  test-server-network:
+    external: false
+volumes:
+  syslog-ng-data:

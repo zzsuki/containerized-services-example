@@ -1,0 +1,41 @@
+groups:
+- name: PG告警规则
+  rules:
+  - alert: PG存活告警
+    expr: pg_up == 0
+    for: 0m
+    labels:
+      severity: critical
+      user: zzsuki
+    annotations:
+      summary: 检测到pg状态异常 (instance {{ $labels.instance }})
+      description: "检测到Postgresql未启动\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+  - alert: PG重启告警
+    expr: time() - pg_postmaster_start_time_seconds < 60
+    for: 0m
+    labels:
+      severity: critical
+      user: zzsuki
+    annotations:
+      summary: 检测到pg重启 (instance {{ $labels.instance }})
+      description: "检测到Postgresql重启\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+  - alert: PG连接数告警
+    expr: sum by (datname) (pg_stat_activity_count{datname!~"template.*|postgres"}) > pg_settings_max_connections * 0.8
+    for: 2m
+    labels:
+      severity: warning
+      user: zzsuki
+    annotations:
+      summary: 检测到pg连接数超过配置的80% (instance {{ $labels.instance }})
+      description: "检测到pg连接数过多 (> 80%).\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+  - alert: PG死锁告警
+    expr: increase(pg_stat_database_deadlocks{datname!~"template.*|postgres"}[1m]) > 5
+    for: 0m
+    labels:
+      severity: warning
+      user: zzsuki
+    annotations:
+      summary: 检测到pg出现死锁 (instance {{ $labels.instance }})
+      description: "发现pg死锁\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+
+

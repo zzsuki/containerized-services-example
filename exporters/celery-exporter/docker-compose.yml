@@ -1,0 +1,12 @@
+version: "3"
+services:
+  celery-exporter:
+    image: ovalmoney/celery-exporter:latest
+    container_name: celery-exporter
+    network_mode: host
+    environment:
+      - CELERY_EXPORTER_BROKER_URL=redis://$CELERY_HOST:6379/2
+      - CELERY_EXPORTER_NAMESPACE=celery
+    ports: 
+      - '9540:9540'
+    restart: always

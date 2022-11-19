@@ -1,0 +1,128 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: consul-server-external
+  labels:
+    app: consul-server
+  namespace: monitor
+spec:
+  type: NodePort
+  ports:
+  - port: 8080
+    targetPort: 8080
+    nodePort: 30080
+    name: http-port
+  - port: 8500
+    targetPort: 8500
+    nodePort: 30081
+    name: ui-port
+  - port: 8300
+    targetPort: 8300
+    nodePort: 30082
+    name: server
+  selector:
+    app: consul-server
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: consul-server-headless
+  labels:
+    app: consul-server
+  namespace: monitor
+spec:
+  clusterIP: None
+  ports:
+  - port: 8080
+    name: http-port
+  - port: 8500
+    name: ui-port
+  - port: 8300
+    name: server
+  selector:
+    app: consul-server
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: consul-server
+  namespace: monitor
+  labels:
+    app: consul-server
+spec:
+  serviceName: consul-server-headless
+  selector:
+    matchLabels:
+      app: consul-server
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: consul-server
+    spec:
+      volumes:
+        - name: consul-data-volume
+          emptyDir: {}
+        - name: consul-config-volume
+          configMap:
+            defaultMode: 420
+            name: consul-config
+      containers:
+        - name: consul
+          image: consul:latest
+          args:
+            - "agent"
+            - "-server"
+            - "-bootstrap-expect=2"
+            - "-ui"
+            - "-data-dir=/consul/data"
+            - "-config-dir=/consul/myconfig"
+            - "-bind=0.0.0.0"
+            - "-client=0.0.0.0"
+            - "-advertise=$(PODIP)"
+            - "-retry-join=consul-server-0.consul-server-headless.monitor.svc.cluster.local"
+            - "-retry-join=consul-server-1.consul-server-headless.monitor.svc.cluster.local"
+            - "-domain=cluster.local"
+            - "-disable-host-node-id"
+          env:
+            - name: PODIP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+          volumeMounts:
+            - name: consul-data-volume
+              mountPath: /consul/data
+            - name: consul-config-volume
+              mountPath: /consul/myconfig/
+          resources:
+            limits:
+              cpu: 1
+              memory: 1Gi
+            requests:
+              cpu: 500m
+              memory: 500M
+          ports:
+            - containerPort: 8080
+              name: http-port
+            - containerPort: 8500
+              name: ui-port
+            - containerPort: 8400
+              name: alt-port
+            - containerPort: 53
+              name: udp-port
+            - containerPort: 8443
+              name: https-port
+            - containerPort: 8301
+              name: serflan
+            - containerPort: 8302
+              name: serfwan
+            - containerPort: 8600
+              name: consuldns
+            - containerPort: 8300
+              name: server
+          imagePullPolicy: Always
+

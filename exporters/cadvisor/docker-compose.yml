@@ -1,0 +1,20 @@
+version: "3"
+services:
+  cadvisor:
+    image: google/cadvisor:latest
+    container_name: cadvisor
+    restart: always
+    network_mode: host
+    command:
+      - '--port=8081'
+      - '--housekeeping_interval=30s'
+      - '--docker_only=true'
+      - '--disable_metrics=percpu,sched,tcp,udp,disk,diskIO,accelerator,hugetlb,referenced_memory,cpu_topology,resctrl'
+    volumes:
+      - '/:/rootfs:ro'
+      - '/var/run:/var/run:ro'
+      - '/sys:/sys:ro'
+      - '/var/lib/docker/:/var/lib/docker:ro'
+      - '/dev/disk/:/dev/disk:ro'
+    ports:
+      - '8081:8081'

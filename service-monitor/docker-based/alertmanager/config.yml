@@ -1,0 +1,32 @@
+# 配置如下
+global:
+  resolve_timeout: 5m
+   # smtp配置
+  smtp_from: "example@163.com"            # 发件人邮箱地址
+  smtp_smarthost: 'smtp.163.com:25'          # smtp服务地址和端口
+  smtp_auth_username: "example@163.com"   # 用户名
+  smtp_auth_password: "example password"      # 密码，开通smtp服务生成的授权码
+  smtp_require_tls: true
+
+templates:
+  - '/etc/alertmanager/templates/*.tmpl'
+
+route:
+  group_by: ['alertname', 'instance']
+  group_wait: 30s
+  group_interval: 10m
+  repeat_interval: 30m
+  receiver: 'debug-dingding-robot'
+
+  routes:
+    - receiver: debug-dingding-robot
+      group_wait: 30s
+      matchers:
+        - user = zzsuki
+
+
+receivers:
+  - name: 'debug-dingding-robot'
+    webhook_configs:
+      - url: 'http://dingding-webhook:8000/webhook'
+        send_resolved: true

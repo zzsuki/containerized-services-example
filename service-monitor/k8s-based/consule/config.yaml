@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: consul-config
+  labels:
+    name: consul-config
+  namespace: monitor
+data:
+  config.hcl: |-
+    log_level = "INFO",
+    data_dir = "/consul/data",
+    telemetry {
+      prometheus_retention_time =  "24h",
+      disable_hostname = true
+    }

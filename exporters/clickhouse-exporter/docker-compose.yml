@@ -1,0 +1,15 @@
+version: "3"
+services:
+  celery-exporter:
+    image: f1yegor/clickhouse-exporter
+    container_name: clickhouse-exporter
+    network_mode: host
+    environment:
+      - CLICKHOUSE_USER=admin
+      - CLICKHOUSE_PASSWORD=admin
+      - CLICKHOUSE_DB=default
+    command:
+      - '-scrape_uri=http://${clickhouse_host}:8123/'
+    ports:
+      - '9540:9540'
+    restart: always

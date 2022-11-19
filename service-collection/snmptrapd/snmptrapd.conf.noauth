@@ -1,0 +1,2 @@
+disableAuthorization yes
+authCommunity log,execute,net public

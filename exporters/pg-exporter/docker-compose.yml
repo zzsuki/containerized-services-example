@@ -1,0 +1,14 @@
+version: "3"
+services:
+  postgres-exporter:
+    image: prometheuscommunity/postgres-exporter:latest
+    container_name: postgres-exporter
+    network_mode: host
+    environment:
+      - DATA_SOURCE_URI=127.0.0.1/database?sslmode=disable
+      - DATA_SOURCE_USER=admin
+      - DATA_SOURCE_PASS=admin
+      - PG_EXPORTER_AUTO_DISCOVER_DATABASES=true
+    ports: 
+        - '9187:9187'
+    restart: always

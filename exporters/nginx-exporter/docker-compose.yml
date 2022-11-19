@@ -1,0 +1,11 @@
+version: "3"
+services:
+  nginx-exporter:
+    image: nginx/nginx-prometheus-exporter:0.10.0
+    container_name: nginx-exporter
+    network_mode: host
+    environment:
+      - SCRAPE_URI=http://$NGINX_HOST/stub_status
+    ports: 
+        - '9113:9113'
+    restart: always

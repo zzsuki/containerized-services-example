@@ -1,0 +1,16 @@
+version: "3"
+services:
+  httpd:
+    build: .
+    image: zzsuki-httpd:1.0
+    container_name: httpd
+    restart: always
+    networks:
+      - test-server-network
+    ports:
+      - "80:80"
+    environment:
+      - TZ=Asia/Shanghai
+networks:
+  test-server-network:
+    external: false

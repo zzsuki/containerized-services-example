@@ -1,0 +1,13 @@
+version: "3"
+services:
+  minio-exporter:
+    image: joepll/minio-exporter:v0.2.0
+    container_name: minio-exporter
+    network_mode: host
+    environment:
+      - MINIO_URL=http://$MINIO_HOST:9000
+      - MINIO_ACCESS_KEY=admin
+      - MINIO_ACCESS_SECRET=admin
+    ports: 
+      - '9290:9290'
+    restart: always

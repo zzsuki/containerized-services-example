@@ -1,0 +1,30 @@
+version: "3"
+services:
+  clickhouse-server:
+    image: clickhouse/clickhouse-server:22.7.1.2484
+    container_name: clickhouse-server
+    restart: always
+    networks:
+      - test-server-network
+    ports:
+      - "8123:8123"
+      - "9000:9000"
+    environment:
+      - CLICKHOUSE_DB=test_db
+      - CLICKHOUSE_USER=zzsuki
+      - CLICKHOUSE_PASSWORD=zzsuki
+      - TZ=Asia/Shanghai
+    ulimits:
+      nofile:
+        soft: 262144
+        hard: 262144
+    volumes:
+      - clickhouse-server-data:/var/lib/clickhouse/
+      - clickhouse-server-log:/var/log/clickhouse-server/
+      - ./max_suspicious_broken_parts.xml:/etc/clickhouse-server/config.d/max_suspicious_broken_parts.xml
+networks:
+  test-server-network:
+    external: false
+volumes:
+  clickhouse-server-data:
+  clickhouse-server-log:

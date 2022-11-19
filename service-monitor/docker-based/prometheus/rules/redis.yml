@@ -1,0 +1,32 @@
+groups:
+- name: Redis告警规则
+  rules:
+  - alert: Redis存活告警
+    expr: redis_up == 0
+    for: 0m
+    labels:
+      severity: critical
+      user: zzsuki
+    annotations:
+      summary: Redis状态异常 (instance {{ $labels.instance }})
+      description: "Redis服务未正常启动\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+    # The exporter must be started with --include-system-metrics flag or REDIS_EXPORTER_INCL_SYSTEM_METRICS=true environment variable.
+  - alert: Redis内存告警
+    expr: redis_memory_used_bytes / redis_total_system_memory_bytes * 100 > 90
+    for: 2m
+    labels:
+      severity: warning
+      user: zzsuki
+    annotations:
+      summary: Redis内存不足(instance {{ $labels.instance }})
+      description: "Redis内存不足 (> 90%)\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+  - alert: Redis连接数告警
+    expr: redis_connected_clients > 100
+    for: 2m
+    labels:
+      severity: warning
+      user: zzsuki
+    annotations:
+      summary: Redis连结数过多 (instance {{ $labels.instance }})
+      description: "Redis连接数过多\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+

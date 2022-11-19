@@ -1,0 +1,29 @@
+{{ define "email.html" }}
+{{ if gt (len .Alerts.Firing) 0 -}}
+Alerts Firing: <br>
+{{ range .Alerts }}
+========告警触发======== <br>
+告警级别：{{ .Labels.severity }} <br>
+告警类型：{{ .Labels.alertname }} <br>
+故障主机: {{ .Labels.instance }} <br>
+告警主题: {{ .Annotations.summary }} <br>
+告警详情: {{ .Annotations.description }} <br>
+告警时间: {{ (.StartsAt.Add 28800e9).Format "2006-01-02 15:04:05" }} <br>
+======================= <br>
+{{- end }}
+{{- end }}
+{{ if gt (len .Alerts.Resolved) 0 -}}
+Alerts Resolved: <br>
+{{ range .Alerts }}
+========告警处理======== <br>
+告警级别：{{ .Labels.severity }} <br>
+告警类型：{{ .Labels.alertname }} <br>
+故障主机: {{ .Labels.instance }} <br>
+告警主题: {{ .Annotations.summary }} <br>
+告警详情: {{ .Annotations.description }} <br>
+告警触发时间: {{ (.StartsAt.Add 28800e9).Format "2006-01-02 15:04:05" }} <br>
+告警解决实际: {{ (.EndsAt.Add 28800e9).Format "2006-01-02 15:04:05" }} <br>
+========告警已处理======== <br>
+{{- end }}
+{{- end }}
+{{- end }}

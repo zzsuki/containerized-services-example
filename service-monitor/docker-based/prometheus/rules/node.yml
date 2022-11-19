@@ -1,0 +1,69 @@
+groups:
+- name: 主机告警规则
+  rules:
+  - alert: 实例存活告警
+    expr: up{job="node-exporter"} == 0
+    for: 1m
+    labels:
+      user: zzsuki
+      severity: warning
+    annotations:
+      description: "实例{{ $labels.instance }} 中 {{ $labels.job }} 超过5min未上报数据, 通信可能发生异常"
+      summary: "实例监控异常，目标服务器异常 (instance {{ $labels.instance }})"
+  - alert: CPU使用率告警
+    expr: 100 - (avg by (instance)(irate(node_cpu_seconds_total{mode="idle"}[1m]) )) * 100 > 90
+    for: 5m
+    labels:
+      user: zzsuki
+      severity: warning
+    annotations:
+      description: "服务器{{ $labels.instance }}: CPU使用连续5min超过90%！(当前值: {{ $value }}%)"
+      summary: CPU 负载异常 (instance {{ $labels.instance }})
+  - alert: IOWAIT告警
+    expr: avg by (instance) (rate(node_cpu_seconds_total{mode="iowait"}[5m])) * 100 > 80
+    for: 3m
+    labels:
+      severity: warning
+      user: zzsuki
+    annotations:
+      summary: CPU iowait异常 (instance {{ $labels.instance }})
+      description: "CPU iowait 连续5min大于80%. 连续高iowait意味着磁盘或网络相关操作可能出现异常.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+  - alert: 内存使用率告警
+    expr: (node_memory_MemTotal_bytes - (node_memory_MemFree_bytes+node_memory_Buffers_bytes+node_memory_Cached_bytes )) / node_memory_MemTotal_bytes * 100 > 80
+    for: 5m
+    labels:
+      user: zzsuki
+      severity: warning
+    annotations:
+      description: "服务器{{ $labels.instance }}: 内存使用连续5min超过80%！(当前值: {{ $value }}%)"
+      summary: 内存占用异常 (instance {{ $labels.instance }})
+  - alert: 磁盘读取告警
+    expr: sum by (instance) (rate(node_disk_read_bytes_total[2m])) / 1024 / 1024 > 50
+    for: 3m
+    labels:
+      severity: warning
+      user: zzsuki
+    annotations:
+      summary: 磁盘读取速率异常 (instance {{ $labels.instance }})
+      description: "磁盘读取速率异常 (> 50 MB/s)\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+  - alert: 磁盘写入告警
+    expr: sum by (instance) (rate(node_disk_written_bytes_total[2m])) / 1024 / 1024 > 50
+    for: 3m
+    labels:
+      severity: warning
+      user: zzsuki
+    annotations:
+      summary: 磁盘写入速率异常 (instance {{ $labels.instance }})
+      description: "磁盘写入速率异常 (> 50 MB/s)\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+    # Please add ignored mountpoints in node_exporter parameters like
+  # "--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|run)($|/)".
+  # Same rule using "node_filesystem_free_bytes" will fire when disk fills for non-root users.
+  # - alert: HostOutOfDiskSpace
+  #   expr: (node_filesystem_avail_bytes * 100) / node_filesystem_size_bytes < 10 and ON (instance, device, mountpoint) node_filesystem_readonly == 0
+  #   for: 2m
+  #   labels:
+  #     severity: warning
+  #   annotations:
+  #     summary: Host out of disk space (instance {{ $labels.instance }})
+  #     description: "Disk is almost full (< 10% left)\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+

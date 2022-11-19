@@ -1,0 +1,28 @@
+version: "3"
+services:
+  postgres:
+    image: postgres:10.21
+    container_name: postgres
+    restart: always
+    volumes:
+      - data-postgres:/var/lib/postgresql/data
+      - ./pg_hba.conf:/etc/postgresql/pg_hba.conf
+      - ./postgresql.conf:/etc/postgresql/postgresql.conf
+    environment:
+      - POSTGRES_DB=test
+      - POSTGRES_USER=zzsuki
+      - POSTGRES_PASSWORD=zzsuki
+    networks:
+      - test-server-network
+    ports:
+      - '5432:5432'
+networks:
+  test-server-network:
+    external: false
+volumes:
+  data-postgres:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: /data/postgres

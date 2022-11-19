@@ -1,0 +1,25 @@
+version: "3"
+services:
+  openstack-exporter:
+    image: ghcr.io/openstack-exporter/openstack-exporter:1.6.0
+    container_name: openstack-exporter
+    command: 
+      - --disable-deprecated-metrics 
+      - --disable-service.identity
+      - --disable-service.object-store 
+      - --disable-service.load-balancer 
+      - --disable-service.container-infra  
+      - --disable-service.dns 
+      - --disable-service.baremetal
+      - --disable-service.gnocchi
+      - --disable-service.database
+      - --disable-service.orchestration
+      - --os-client-config="/etc/openstack/clouds.yaml"
+      - default 
+    volumes:
+      - ./clouds.yml:/etc/openstack/clouds.yaml 
+    extra_hosts:
+      - "controller:${controller}"
+    ports: 
+      - '9180:9180'
+    restart: always
