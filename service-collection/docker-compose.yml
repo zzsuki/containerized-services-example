@@ -1,0 +1,106 @@
+version: "3"
+services:
+  syslog-ng:
+    image: lscr.io/linuxserver/syslog-ng:latest
+    container_name: syslog-ng
+    restart: always
+    privileged: true
+    networks:
+      - test-server-network
+    ports:
+      - "514:5514/udp"
+      - "601:6601/tcp"
+      - "6514:6514/tcp"
+    environment:
+      - PUID=0
+      - PGID=0
+      - TZ=Asia/Shanghai
+    volumes:
+      - syslog-ng-data:/config/log
+      - ./syslog-ng/syslog-ng.conf:/config/syslog-ng.conf
+  snmptrapd:
+    image: sig9/snmptrapd
+    container_name: snmptrapd
+    restart: always
+    networks:
+      - test-server-network
+    ports:
+      - "162:162/udp"
+    environment:
+      - TZ=Asia/Shanghai
+    volumes:
+      - ./snmptrapd/snmptrapd.conf:/etc/snmp/snmptrapd.conf
+  postgres:
+    image: postgres:10.21
+    container_name: postgres
+    restart: always
+    volumes:
+      - data-postgres:/var/lib/postgresql/data
+      - ./postgresql/pg_hba.conf:/etc/postgresql/pg_hba.conf
+      - ./postgresql/postgresql.conf:/etc/postgresql/postgresql.conf
+    environment:
+      - POSTGRES_DB=test
+      - POSTGRES_USER=zzsuki
+      - POSTGRES_PASSWORD=zzsuki
+    networks:
+      - test-server-network
+    ports:
+      - '5432:5432'
+  httpd:
+    build: ./http
+    image: zzsuki-httpd:1.0
+    container_name: httpd
+    restart: always
+    networks:
+      - test-server-network
+    ports:
+      - "80:80"
+    environment:
+      - TZ=Asia/Shanghai
+  ftpd:
+    image: teezily/ftpd
+    container_name: ftpd
+    restart: always
+    privileged: true
+    networks:
+      - test-server-network
+    ports:
+      - "21:21/tcp"
+      - "65000-65004:65000-65004"
+    environment:
+      - FTP_USER=zzsuki
+      - FTP_PASSWORD=zzsuki
+      - TZ=Asia/Shanghai
+      - HOST=localhost
+      - PASV_MIN_PORT=65000
+      - PASV_MAX_PORT=65004
+  clickhouse-server:
+    image: clickhouse/clickhouse-server:22.7.1.2484
+    container_name: clickhouse-server
+    restart: always
+    networks:
+      - test-server-network
+    ports:
+      - "8123:8123"
+      - "9000:9000"
+    environment:
+      - CLICKHOUSE_DB=test_db
+      - CLICKHOUSE_USER=zzsuki
+      - CLICKHOUSE_PASSWORD=zzsuki
+      - TZ=Asia/Shanghai
+    ulimits:
+      nofile:
+        soft: 262144
+        hard: 262144
+    volumes:
+      - clickhouse-server-data:/var/lib/clickhouse/
+      - clickhouse-server-log:/var/log/clickhouse-server/
+      - ./clickhouse/max_suspicious_broken_parts.xml:/etc/clickhouse-server/config.d/max_suspicious_broken_parts.xml
+volumes:
+  syslog-ng-data:
+  data-postgres:
+  clickhouse-server-data:
+  clickhouse-server-log:
+networks:
+  test-server-network:
+    driver: bridge
