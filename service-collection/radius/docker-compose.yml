@@ -1,0 +1,23 @@
+version: "3"
+services:
+  freeradius:
+    image: freeradius/freeradius-server:3.2.1
+    container_name: freeradius
+    restart: always
+    networks:
+      - test-server-network
+    ports:
+      - "0.0.0.0:1812-1813:1812-1813"
+      - "1812-1813:1812-1813/udp"
+    command:
+      - -X
+    environment:
+      - TZ=Asia/Shanghai
+    volumes:
+      - ./clients.conf:/etc/raddb/clients.conf
+      - ./users:/etc/raddb/users
+networks:
+  test-server-network:
+    external: false
+# volumes:
+#   syslog-ng-data:

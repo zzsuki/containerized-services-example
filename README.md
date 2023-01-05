@@ -6,7 +6,7 @@
 
 - exporters: 收集各种监控工具的配置信息
 - k8s-cluster-monitor: 收集各种k8s集群监控的配置信息
-- log-inspect: 收集各种日志监控工具和配置信息，目前基于efk栈
+- log-inspect: 收集各种日志监控工具和配置信息，目前基于efk实现
 - service-monitor: 收集各种服务监控的配置信息，目前基于prometheus grafana alertmanager，服务发现使用consul
   - docker-based: 基于docker的监控配置
   - k8s-based: 基于k8s的监控配置
@@ -17,7 +17,15 @@
 - prometheus + grafana + alert manager + consul 服务监控告警
 - es + fluentd + kibana日志监控分析
 - kube-state-metrics：k8s集群的监控app，可以提供集群数据
-- 部分产品的docker-compose文件
+- 部分服务的docker-compose文件
+  - clickhouse
+  - ftp
+  - http
+  - nginx
+  - postgresql
+  - radius
+  - snmptrapd
+  - syslog-ng
 
 ## To be continued
 
