@@ -1,0 +1,15 @@
+version: "3"
+services:
+  oracle:
+    image: wnameless/oracle-xe-11g-r2:18.04-apex
+    container_name: oracle
+    restart: always
+    environment:
+      - ORACLE_ALLOW_REMOTE=true
+    networks:
+      - test-server-network
+    ports:
+      - '1521:1521'
+networks:
+  test-server-network:
+    external: false
