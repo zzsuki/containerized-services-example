@@ -1,0 +1,111 @@
+version: '3'
+
+networks:
+  redis-sentinel-default:
+    external: false
+
+
+volumes:
+  redis-master-data:
+    driver: local
+  redis-slave-data-0:
+    driver: local
+  redis-slave-data-1:
+    driver: local
+
+services:
+  redis-master:
+    image: 'bitnami/redis:latest'
+    container_name: redis-master
+    environment:
+      - REDIS_REPLICATION_MODE=master
+      - REDIS_PASSWORD=str0ng_passw0rd
+    networks:
+      - redis-sentinel-default
+    ports:
+      - '6379'
+    volumes:
+      - redis-master-data:/bitnami
+  redis-slave-0:
+    image: 'bitnami/redis:latest'
+    container_name: redis-slave-0
+    environment:
+      - REDIS_REPLICATION_MODE=slave
+      - REDIS_MASTER_HOST=redis-master
+      - REDIS_MASTER_PASSWORD=str0ng_passw0rd
+      - REDIS_PASSWORD=str0ng_passw0rd
+    ports:
+      - '6379'
+    volumes:
+      - redis-slave-data-0:/bitnami
+    depends_on:
+      - redis-master
+    networks:
+      - redis-sentinel-default
+  redis-slave-1:
+    image: 'bitnami/redis:latest'
+    container_name: redis-slave-1
+    environment:
+      - REDIS_REPLICATION_MODE=slave
+      - REDIS_MASTER_HOST=redis-master
+      - REDIS_MASTER_PASSWORD=str0ng_passw0rd
+      - REDIS_PASSWORD=str0ng_passw0rd
+    ports:
+      - '6379'
+    volumes:
+      - redis-slave-data-1:/bitnami
+    depends_on:
+      - redis-master
+    networks:
+      - redis-sentinel-default
+  redis-sentinel-0:
+    image: 'bitnami/redis-sentinel:latest'
+    container_name: redis-sentinel-0
+    environment:
+      - REDIS_MASTER_SET=default
+      - REDIS_MASTER_HOST=redis-master
+      - REDIS_MASTER_PASSWORD=str0ng_passw0rd
+      - REDIS_SENTINEL_DOWN_AFTER_MILLISECONDS=10000
+      - REDIS_SENTINEL_FAILOVER_TIMEOUT=20000
+    depends_on:
+      - redis-master
+      - redis-slave-0
+      - redis-slave-1
+    ports:
+      - '26379-26381:26379'
+    networks:
+      - redis-sentinel-default
+  redis-sentinel-1:
+    image: 'bitnami/redis-sentinel:latest'
+    container_name: redis-sentinel-1
+    environment:
+      - REDIS_MASTER_SET=default
+      - REDIS_MASTER_HOST=redis-master
+      - REDIS_MASTER_PASSWORD=str0ng_passw0rd
+      - REDIS_SENTINEL_DOWN_AFTER_MILLISECONDS=10000
+      - REDIS_SENTINEL_FAILOVER_TIMEOUT=20000
+    depends_on:
+      - redis-master
+      - redis-slave-0
+      - redis-slave-1
+    ports:
+      - '26379-26381:26379'
+    networks:
+      - redis-sentinel-default
+  redis-sentinel-2:
+    image: 'bitnami/redis-sentinel:latest'
+    container_name: redis-sentinel-2
+    environment:
+      - REDIS_MASTER_SET=default
+      - REDIS_MASTER_HOST=redis-master
+      - REDIS_MASTER_PASSWORD=str0ng_passw0rd
+      - REDIS_SENTINEL_DOWN_AFTER_MILLISECONDS=10000
+      - REDIS_SENTINEL_FAILOVER_TIMEOUT=20000
+    depends_on:
+      - redis-master
+      - redis-slave-0
+      - redis-slave-1
+    ports:
+      - '26379-26381:26379'
+    networks:
+      - redis-sentinel-default
