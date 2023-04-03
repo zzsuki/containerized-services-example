@@ -1,0 +1,20 @@
+version: '3'
+services:
+  trojan-web:
+    image: jrohy/trojan
+    container_name: trojan-web
+    command: init
+    privileged: true
+    restart: always
+    network_mode: host
+    depends_on:
+      - trojan-mariadb
+  trojan-mariadb:
+    image: mariadb:10.2
+    container_name: trojan-mariadb
+    restart: always
+    ports:
+      - "3306:3306"
+    volumes:
+      - /data/mariadb:/var/lib/mysql
+    network_mode: host
