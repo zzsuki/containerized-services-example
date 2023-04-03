@@ -1,0 +1,10 @@
+version: '3'
+services:
+  snmpd:
+    build: .
+    container_name: snmpd
+    ports:
+      - "161:161/udp"
+    volumes:
+      - ./snmpd.conf:/etc/snmp/snmpd.conf
+    restart: always

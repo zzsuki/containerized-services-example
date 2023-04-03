@@ -3,3 +3,6 @@
 .idea
 *.tgz
 .DS_Store
+*.img
+*.rar
+service-collection/nginx/download
