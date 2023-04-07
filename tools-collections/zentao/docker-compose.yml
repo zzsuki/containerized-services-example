@@ -1,18 +1,27 @@
 version: '3'
 services:
   zentao:
-    image: easysoft/zentao:12.3.3
+    image: easysoft/zentao:18.3
     container_name: zentao
     ports:
       - 8080:80
     environment:
       - MYSQL_ROOT_PASSWORD=12345678
     volumes:
-      - /data/zentao:/www/zentaopms
-      - /data/mysql:/var/lib/mysql
+      - /data/zentao-pms:/www/zentaopms
+      - /data/zentao-mysql:/var/lib/mysql
     restart: always
     networks:
       - zentao
 networks:
   zentao:
     external: false
+
+
+# for 从1到100进行循环，依次检查num
+#   for 排除掉这个数自身和1，即从i=2到num-1
+#     if num能被i整除，说明num不是质数，跳出循环
+#   end for
+#   if 循环完整结束，说明num是质数(未找到可以整除的)，打印出来
+#   else 找到了可以整除的，说明num不是质数，不打印
+# end fo

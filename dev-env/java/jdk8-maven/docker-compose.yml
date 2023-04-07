@@ -1,0 +1,9 @@
+version: '3'
+services:
+  jdk8-maven:
+    build: .
+    image: jdk8-maven:1.0
+    container_name: jdk8-maven
+    ports:
+      - "2222:22"
+    restart: always

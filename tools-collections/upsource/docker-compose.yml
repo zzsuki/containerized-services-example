@@ -1,0 +1,12 @@
+version: '3'
+services:
+  upsource:
+    image: jetbrains/upsource:2020.1.2006
+    container_name: upsource
+    ports:
+      - '8082:8080'
+    volumes:
+      - /data/upsource-data:/opt/upsource/data
+      - /data/upsource-backups:/opt/upsource/backups
+      - /data/upsource-logs:/opt/upsource/logs
+      - /data/upsource-conf:/opt/upsource/conf
