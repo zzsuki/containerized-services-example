@@ -1,0 +1,8 @@
+%YAML 1.1
+---
+
+af-packet:
+  - interface: eno1
+    cluster-id: 99
+    cluster-type: cluster_flow
+    threads: auto
