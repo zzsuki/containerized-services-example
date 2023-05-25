@@ -13,6 +13,8 @@ RUN sed -i 's/security.ubuntu.com/mirrors.ustc.edu.cn/g' /etc/apt/sources.list
 RUN apt update && apt install -y git vim locales tzdata
 # setup file env 
 ENV LANG=C.UTF-8 LC_ALL=C.UTF-8 TZ=Asia/Shanghai
+# setup root password
+ENV ROOT_PASSWORD root
 
 # sshd
 RUN mkdir /run/sshd; \
@@ -29,10 +31,6 @@ RUN { \
     echo 'exec "$@"'; \
     } > /usr/local/bin/entry_point.sh; \
     chmod +x /usr/local/bin/entry_point.sh;
-
-ENV TZ Asia/Tokyo
-
-ENV ROOT_PASSWORD root
 
 EXPOSE 22
 
