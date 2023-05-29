@@ -10,8 +10,8 @@ services:
       - ./postgresql.conf:/etc/postgresql/postgresql.conf
     environment:
       - POSTGRES_DB=test
-      - POSTGRES_USER=zzsuki
-      - POSTGRES_PASSWORD=zzsuki
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin
     networks:
       - test-server-network
     ports:

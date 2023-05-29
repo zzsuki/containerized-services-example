@@ -11,8 +11,8 @@ services:
       - "9000:9000"
     environment:
       - CLICKHOUSE_DB=test_db
-      - CLICKHOUSE_USER=zzsuki
-      - CLICKHOUSE_PASSWORD=zzsuki
+      - CLICKHOUSE_USER=admin
+      - CLICKHOUSE_PASSWORD=admin
       - TZ=Asia/Shanghai
     ulimits:
       nofile:

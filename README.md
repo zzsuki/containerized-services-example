@@ -1,33 +1,10 @@
-# 监控方案与配置集合
+# containerized-services-example
 
-本项目主要用于收集和整合各种可用的监控配置信息，以便于快速搭建一个可用的监控系统。其中包含部分之前学习的内容
+This repository is used to record and share some examples dockercompose file and k8s files for containerized services. Some of them may not be used in production environment, but can be used for learning and testing.
 
-## 项目目录
+## Directory Structure
 
-- exporters: 收集各种监控工具的配置信息
-- k8s-cluster-monitor: 收集各种k8s集群监控的配置信息
-- log-inspect: 收集各种日志监控工具和配置信息，目前基于efk实现
-- service-monitor: 收集各种服务监控的配置信息，目前基于prometheus grafana alertmanager，服务发现使用consul
-  - docker-based: 基于docker的监控配置
-  - k8s-based: 基于k8s的监控配置
-- service-collection: 收集各种常用服务的部署配置，可以用于构造测试环境
-
-## 支持的范围
-
-- prometheus + grafana + alert manager + consul 服务监控告警
-- es + fluentd + kibana日志监控分析
-- kube-state-metrics：k8s集群的监控app，可以提供集群数据
-- 部分服务的docker-compose文件
-  - clickhouse
-  - ftp
-  - http
-  - nginx
-  - postgresql
-  - radius
-  - snmptrapd
-  - syslog-ng
-
-## To be continued
-
-- [ ] docker中的consul支持
-- [ ] 更多的服务支持
+* [dev-env-examples](https://github.com/zzsuki/containerized-services-example/tree/main/dev-env-examples): Some examples for development environment which I have used in my work.
+* [monitor-resolutions](https://github.com/zzsuki/containerized-services-example/tree/main/monitor-resolutions): Some resolutions for monitor containerized services, in this directory, there are some examples for `prometheus`, `grafana`, `alertmanager`, etc.
+* [service-collection](https://github.com/zzsuki/containerized-services-example/tree/main/service-collection): Some simple examples for common services such as `mysql`, `redis`, `syslog`, `nginx`, etc.
+* [build-docker.sh](https://github.com/zzsuki/containerized-services-example/tree/main/build-docker.sh): A shell script to install `docker` and `docker-compose` in `CentOS` or `Ubuntu`.

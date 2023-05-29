@@ -19,4 +19,4 @@ Jira is a proprietary issue tracking product, developed by Atlassian. It provide
 
 ### Setup Third Part Jira Plugin
 
-same as jira setup, need to get plugin info in jira marketplace
+Same as jira setup, need to get plugin info in jira marketplace

@@ -1,6 +1,6 @@
 FROM ubuntu:jammy
 
-LABEL maintainer="zzsuki <zzsuki@163.com>"
+LABEL maintainer="zzsuki <zzsuki-axfox@outlook.com>"
 LABEL description="A simple java development environment based on ubuntu:jammy"
 LABEL version="1.0"
 
