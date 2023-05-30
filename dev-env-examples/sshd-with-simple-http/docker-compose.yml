@@ -1,0 +1,17 @@
+version: "3"
+services:
+  sshd-httpd:
+    # build: .
+    image: sshd-httpd:v1.1
+    container_name: sshd-httpd
+    restart: always
+    networks:
+      - test-server-network
+    ports:
+      - "80:80"
+      - "2222:22"
+    environment:
+      - TZ=Asia/Shanghai
+networks:
+  test-server-network:
+    external: false
