@@ -7,18 +7,16 @@ services:
       - SYS_NICE
     restart: always
     environment:
-      - LANG=en_US.UTF-8 
-      - LC_ALL=en_US.UTF-8
+      - LANG=C.UTF-8
       - MYSQL_DATABASE=test
       - MYSQL_ROOT_PASSWORD=Admin@123
-    command:
-      - --character-set-server=utf8mb4
-      - --collation-server=utf8mb4_unicode_ci
+    command: [ --character-set-server=utf8mb4, --collation-server=utf8mb4_unicode_ci]
     ports:
       - '3306:3306'
     volumes:
       - db:/var/lib/mysql
-      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./sql/inject_data.sql:/docker-entrypoint-initdb.d/inject_data.sql
     networks:
       - test-mysql-db
 networks:
