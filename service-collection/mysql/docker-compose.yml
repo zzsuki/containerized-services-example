@@ -1,0 +1,29 @@
+version: '3'
+services:
+  db:
+    image: mysql:8.0.34-oracle
+    container_name: mysql-test
+    cap_add:
+      - SYS_NICE
+    restart: always
+    environment:
+      - LANG=en_US.UTF-8 
+      - LC_ALL=en_US.UTF-8
+      - MYSQL_DATABASE=test
+      - MYSQL_ROOT_PASSWORD=Admin@123
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    ports:
+      - '3306:3306'
+    volumes:
+      - db:/var/lib/mysql
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - test-mysql-db
+networks:
+  test-mysql-db:
+    external: false
+volumes:
+  db:
+    driver: local
